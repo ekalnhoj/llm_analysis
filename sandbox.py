@@ -1,5 +1,6 @@
 # This was helpful: https://blog.gitguardian.com/how-to-handle-secrets-in-python/
 
+#%%
 # Set env var OPENAI_API_KEY or load from a .env file
 import dotenv
 dotenv.load_dotenv()
@@ -90,20 +91,44 @@ memory = ConversationSummaryMemory(
 )
 qa = ConversationalRetrievalChain.from_llm(llm, retriever=retriever, memory=memory)
 
+#%%
 # Do the thing
-question = """
+question = ...
+"""
 For each class in the code, show me the class hierarchy following these rules:
 - each class on its own line
 - if class "A" has no parents, have the contents of the line be "A"
 - if class "B" inherits from "A", have the contents of the line be "A -> B"
 - do this recursively, so if E inherits from B which inherits from A, the contents of the line are "A -> B -> E"
 """
-result = qa(question)
-result["answer"]
-print(result)
 
 #%%
+result = qa(question)
+# result["answer"]
+print("Result obtained!")
 
+#%%
+print(result["answer"])
+
+#%%
+question = \
+"""
+Give me documentation for each function in the code, including:
+- arguments
+- returns
+- other actions
+
+Put each documentation block in the example format below, with <> used to signify 
+what type of info should be in each spot. Format starts here:
+# ========== #
+# <class name (if applicable)> : <function name>
+# Arguments: <arguments>
+# Returns: <returns>
+# Actions: <actions>
+# Notes: <any other info>
+# ========== #
+"""
 
 if __name__ == "__main__":
     print("Code complete!")
+# %%
