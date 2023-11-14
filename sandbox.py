@@ -52,16 +52,27 @@ if 0:
     #   the rate limit I guess.
     db = Chroma.from_documents(texts, OpenAIEmbeddings(disallowed_special=()))
 else:
-    # To avoid violating the rate limit.
-    idx = 0
-    chromadb.PersistentClient()
-    lc_chroma = Chroma(client=persistent_client)
-    db = Chroma.create_collection(name="shapes", embeddings=OpenAIEmbeddings(disallowed_special=()))
-    for splitted_document in texts:
-        print(f"Adding text {idx+1}... ",end="")
-        db.add(documents=splitted_document)
-        print("Done.")
-        time.sleep(60)
+    # From https://python.langchain.com/docs/modules/data_connection/text_embedding/
+    from langchain.embeddings import OpenAIEmbeddings
+
+    embeddings_model = OpenAIEmbeddings()
+
+    embeddings = embeddings_model.embed_documents(
+        [
+            "Hi there!",
+            "Oh, hello!",
+            "What's your name?",
+            "My friends call me World",
+            "Hello World!"
+        ]
+    )
+    len(embeddings), len(embeddings[0])
+
+    embedded_query = embeddings_model.embed_query("What was the name mentioned in the conversation?")
+    print(embedded_query[:5])
+
+    pass
+
 
 retriever = db.as_retriever(
     search_type="mmr",  # Also test "similarity"
