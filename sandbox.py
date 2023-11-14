@@ -47,14 +47,13 @@ if 1:
 from langchain.vectorstores import Chroma
 from langchain.embeddings.openai import OpenAIEmbeddings
 
-if 0:
+if 1:
     # The example has this, but you need a paid plan for this not to violate
     #   the rate limit I guess.
     db = Chroma.from_documents(texts, OpenAIEmbeddings(disallowed_special=()))
 else:
     # From https://python.langchain.com/docs/modules/data_connection/text_embedding/
     from langchain.embeddings import OpenAIEmbeddings
-
     embeddings_model = OpenAIEmbeddings()
 
     embeddings = embeddings_model.embed_documents(
@@ -91,15 +90,20 @@ memory = ConversationSummaryMemory(
 )
 qa = ConversationalRetrievalChain.from_llm(llm, retriever=retriever, memory=memory)
 
+# Do the thing
+question = """
+For each class in the code, show me the class hierarchy following these rules:
+- each class on its own line
+- if class "A" has no parents, have the contents of the line be "A"
+- if class "B" inherits from "A", have the contents of the line be "A -> B"
+- do this recursively, so if E inherits from B which inherits from A, the contents of the line are "A -> B -> E"
+"""
+result = qa(question)
+result["answer"]
+print(result)
 
-# # Do the thing
-# question = "What is the class hierarchy?"
-# result = qa(question)
-# result["answer"]
-# print(result)
-
-
+#%%
 
 
 if __name__ == "__main__":
-    print("NYI")
+    print("Code complete!")
